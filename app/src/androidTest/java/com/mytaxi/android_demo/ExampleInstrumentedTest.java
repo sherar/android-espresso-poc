@@ -40,11 +40,7 @@ public class ExampleInstrumentedTest  {
 
     @Before
     public void setup() {
-        File root = InstrumentationRegistry.getTargetContext().getFilesDir().getParentFile();
-        String[] sharedPreferencesFileNames = new File(root, "shared_prefs").list();
-        for (String fileName : sharedPreferencesFileNames) {
-            InstrumentationRegistry.getTargetContext().getSharedPreferences(fileName.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
-        }
+        deleteAppData();
     }
 
 
@@ -55,7 +51,7 @@ public class ExampleInstrumentedTest  {
     }
 
     @Test
-    public void tc2searchDriver() throws InterruptedException {
+    public void tc2searchAndCallDriver() throws InterruptedException {
         currentActivity = activityRule.getActivity();
 
         MainScreen.enterDriverFirstTwoLetters("sa");
@@ -68,5 +64,13 @@ public class ExampleInstrumentedTest  {
         DriverDetailsScreen.assertCallToDriverButtonPresent();
         DriverDetailsScreen.getDriverCard().check(matches(withText("Sarah Scott")));
         DriverDetailsScreen.callDriver();
+    }
+
+    private void deleteAppData() {
+        File root = InstrumentationRegistry.getTargetContext().getFilesDir().getParentFile();
+        String[] sharedPreferencesFileNames = new File(root, "shared_prefs").list();
+        for (String fileName : sharedPreferencesFileNames) {
+            InstrumentationRegistry.getTargetContext().getSharedPreferences(fileName.replace(".xml", ""), Context.MODE_PRIVATE).edit().clear().commit();
+        }
     }
 }
